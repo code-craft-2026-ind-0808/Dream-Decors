@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream Decors by Yeswanth</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#fff5f7}
+.header{background:#88002a;color:white;padding:15px;text-align:center}
+.header h1{font-size:24px}
+.header p{font-size:14px;opacity:.9}
+.filters{display:flex;gap:8px;overflow:auto;padding:12px;background:white;position:sticky;top:0}
+.filters button{padding:8px 16px;border-radius:20px;border:1px solid #88002a;background:white;color:#88002a;white-space:nowrap}
+.filters button.active{background:#88002a;color:white}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:10px}
+.card{background:white;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.card img{width:100%;height:180px;object-fit:cover}
+.card .info{padding:8px}
+.card .info h3{font-size:14px}
+.card .info p{font-size:12px;color:gray}
+.book{position:fixed;bottom:15px;left:10px;right:10px;background:#25D366;color:white;text-align:center;padding:15px;border-radius:30px;font-weight:bold;text-decoration:none;font-size:18px}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Dream Decors by Yeswanth</h1>
+<p>Wedding | Birthday | Corporate | DJ | Decoration | Bangalore</p>
+</div>
+<div class="filters" id="filters">
+<button class="active" onclick="filterData('All')">All</button>
+<button onclick="filterData('Wedding')">Wedding</button>
+<button onclick="filterData('Birthday')">Birthday</button>
+<button onclick="filterData('Corporate')">Corporate</button>
+<button onclick="filterData('DJ')">DJ</button>
+<button onclick="filterData('Decoration')">Decoration</button>
+</div>
+<div class="grid" id="grid"></div>
+
+<a class="book" href="https://wa.me/919999999999?text=Hi%20Yeswanth,%20I%20want%20to%20book%20Dream%20Decors">📲 Book on WhatsApp</a>
+
+<script src="data.js"></script>
+<script>
+let current='All';
+function render(){
+ const g=document.getElementById('grid'); g.innerHTML='';
+ const list = current==='All' ? events : events.filter(e=>e.category===current);
+ list.forEach(ev=>{
+   g.innerHTML+=`<div class="card"><img src="${ev.image}"><div class="info"><h3>${ev.title}</h3><p>${ev.category} | ${ev.date}</p></div></div>`
+ });
+}
+function filterData(cat){
+ current=cat;
+ document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
+ event.target.classList.add('active');
+ render();
+}
+render();
+</script>
+</body>
+</html>
