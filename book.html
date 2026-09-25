@@ -1,0 +1,41 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Decor - Dream Decors</title>
+<style>body{font-family:Arial;background:#fff5f7;padding:20px}.card{background:white;max-width:500px;margin:20px auto;padding:20px;border-radius:15px}input,textarea,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;box-sizing:border-box}button{width:100%;padding:12px;background:#88002a;color:white;border:none;border-radius:10px;font-size:16px}</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+</head><body>
+<div class="card">
+<h2 style="color:#88002a">Book Your Event</h2>
+<p>Logged in as: <span id="uemail"></span></p>
+<select id="type"><option>Wedding</option><option>Birthday</option><option>Corporate</option><option>DJ</option><option>Decoration</option></select>
+<input id="date" type="date">
+<input id="place" placeholder="Place / Hall Name">
+<input id="phone" placeholder="Phone Number">
+<textarea id="details" placeholder="Your requirements"></textarea>
+<button onclick="book()">CONFIRM BOOKING</button>
+<p style="text-align:center"><a href="index.html">Back to Gallery</a></p>
+<div id="msg"></div>
+</div>
+<script>
+document.getElementById('uemail').innerText=localStorage.getItem('email')||'Customer';
+auth.onAuthStateChanged(user=>{if(!user) location.href='login.html';});
+async function book(){
+ const data={
+  type: document.getElementById('type').value,
+  date: document.getElementById('date').value,
+  place: document.getElementById('place').value,
+  phone: document.getElementById('phone').value,
+  details: document.getElementById('details').value,
+  email: localStorage.getItem('email'),
+  status: 'New',
+  created: new Date()
+ };
+ try{
+  await db.collection('bookings').add(data);
+  document.getElementById('msg').innerHTML='<h3 style=color:green>Booking Confirmed! Yeswanth will call you.</h3>';
+  setTimeout(()=>location.href='index.html',2000);
+ }catch(e){alert(e.message)}
+}
+</script></body></html>
