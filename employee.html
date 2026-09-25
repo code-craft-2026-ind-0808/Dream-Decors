@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Employee - Dream Decors</title>
+<style>body{font-family:Arial;background:#f0f0f0;padding:15px}.job{background:white;padding:15px;border-radius:12px;margin:10px 0}button{padding:8px 12px;background:#88002a;color:white;border:none;border-radius:6px}</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+</head><body>
+<h2>Employee Dashboard</h2>
+<p id="welcome"></p><button onclick="auth.signOut().then(()=>location.href='login.html')">Logout</button>
+<div id="jobs"></div>
+<script>
+const email=localStorage.getItem('email');
+document.getElementById('welcome').innerText='Hi '+email+' - Your Assigned Jobs:';
+auth.onAuthStateChanged(u=>{if(!u) location.href='login.html';});
+db.collection('bookings').where('assignedTo','==',email).onSnapshot(snap=>{
+ let html='';
+ snap.forEach(doc=>{
+  const j=doc.data();
+  html+=`<div class=job><b>${j.type}</b> - ${j.date}<br>Place: ${j.place}<br>Phone: ${j.phone}<br>Details: ${j.details}<br>Status: ${j.status}<br><button onclick="done('${doc.id}')">Mark Done</button></div>`;
+ });
+ document.getElementById('jobs').innerHTML=html||'No jobs assigned yet';
+});
+function done(id){db.collection('bookings').doc(id).update({status:'Completed'});}
+</script></body></html>
