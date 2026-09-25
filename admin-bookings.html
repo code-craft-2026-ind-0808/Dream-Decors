@@ -1,0 +1,27 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Bookings - Dream Decors</title>
+<style>body{font-family:Arial;padding:15px;background:#fff5f7}.job{background:white;padding:12px;border-radius:10px;margin:8px 0}input{padding:6px;border-radius:5px;border:1px solid #ccc}button{background:#88002a;color:white;border:none;padding:6px 10px;border-radius:5px}</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+</head><body>
+<h2>Yeswanth - All Bookings</h2><button onclick="auth.signOut().then(()=>location.href='login.html')">Logout</button>
+<div id="list"></div>
+<script>
+auth.onAuthStateChanged(u=>{if(!u) location.href='login.html';});
+db.collection('bookings').orderBy('created','desc').onSnapshot(snap=>{
+ let html='';
+ snap.forEach(doc=>{
+  const j=doc.data();
+  html+=`<div class=job><b>${j.type}</b> | ${j.date} | ${j.email}<br>${j.place} - ${j.phone}<br>${j.details}<br>Status: <b>${j.status}</b><br>Assign to: <input id="e-${doc.id}" placeholder="employee email"> <button onclick="assign('${doc.id}')">Assign</button></div>`;
+ });
+ document.getElementById('list').innerHTML=html;
+});
+function assign(id){
+ const empEmail=document.getElementById('e-'+id).value;
+ if(!empEmail){alert('Enter employee email');return;}
+ db.collection('bookings').doc(id).update({assignedTo:empEmail,status:'Assigned to '+empEmail});
+ alert('Assigned!');
+}
+</script></body></html>
