@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login - Dream Decors</title>
+<style>
+body{font-family:Arial;background:#fff5f7;padding:20px}
+.card{background:white;max-width:400px;margin:30px auto;padding:25px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1)}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
+button{width:100%;padding:12px;background:#88002a;color:white;border:none;border-radius:8px;font-size:16px;margin-top:10px}
+h2{text-align:center;color:#88002a}
+.small{font-size:13px;text-align:center;margin-top:15px}
+a{color:#88002a}
+</style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase.js"></script>
+</head><body>
+<div class="card">
+<h2>Dream Decors Login</h2>
+<input id="email" type="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
+<select id="role"><option value="customer">Customer</option><option value="employee">Employee</option><option value="admin">Admin (Yeswanth)</option></select>
+<button onclick="login()">LOGIN</button>
+<button onclick="signup()" style="background:#555">NEW USER? SIGNUP</button>
+<div id="msg" class="small"></div>
+<div class="small"><a href="index.html">Back to Gallery</a></div>
+</div>
+<script>
+async function signup(){
+ const email=document.getElementById('email').value;
+ const pass=document.getElementById('pass').value;
+ const role=document.getElementById('role').value;
+ if(!email||!pass){alert('Enter email & password');return;}
+ try{
+  const cred=await auth.createUserWithEmailAndPassword(email,pass);
+  await db.collection('users').doc(cred.user.uid).set({email:email,role:role,created:new Date()});
+  document.getElementById('msg').innerText='Signup success! Now Login.';
+  alert('Account created as '+role);
+ }catch(e){alert(e.message)}
+}
+async function login(){
+ const email=document.getElementById('email').value;
+ const pass=document.getElementById('pass').value;
+ try{
+  const cred=await auth.signInWithEmailAndPassword(email,pass);
+  const doc=await db.collection('users').doc(cred.user.uid).get();
+  if(!doc.exists){alert('No role found, contact Admin');return;}
+  const role=doc.data().role;
+  localStorage.setItem('role',role);
+  localStorage.setItem('email',email);
+  if(role=='admin') location.href='admin-bookings.html';
+  else if(role=='employee') location.href='employee.html';
+  else location.href='book.html';
+ }catch(e){alert(e.message)}
+}
+</script>
+</body></html>
